@@ -197,25 +197,28 @@ Find shampoo
 
 ### Dashboard
 
-> Add dashboard screenshot here
+<img width="1917" height="1077" alt="image" src="https://github.com/user-attachments/assets/f8a134f5-8230-453a-8ead-b61c2ed8f64e" />
+
 
 ---
 
 ### Voice Shopping Assistant
+<img width="1916" height="1078" alt="image" src="https://github.com/user-attachments/assets/a7c8cafb-33e0-40f5-8627-d5ef41d627ce" />
 
-> Add screenshot here
 
 ---
 
 ### Shopping List
 
-> Add screenshot here
+<img width="1012" height="781" alt="image" src="https://github.com/user-attachments/assets/b0198864-a173-44eb-8554-c88bdcd2189b" />
+
 
 ---
 
 ### User Profile
 
-> Add screenshot here
+<img width="1851" height="781" alt="image" src="https://github.com/user-attachments/assets/5f719c8a-bbfd-48b5-beaf-de8f9b5c2e4a" />
+
 
 ---
 
