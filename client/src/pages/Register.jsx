@@ -42,10 +42,14 @@ export default function Register() {
       }, 1200);
 
     } catch (err) {
+  console.log(err.response?.data);
 
-      setError(err.response?.data?.message || "Registration Failed");
-
-    }
+  setError(
+    err.response?.data?.message ||
+    err.message ||
+    "Registration Failed"
+  );
+}
 
   };
 

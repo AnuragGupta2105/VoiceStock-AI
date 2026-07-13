@@ -47,10 +47,13 @@ localStorage.setItem("user",JSON.stringify(res.data.user));
 
 navigate("/dashboard");
 
-}catch{
+}catch (err) {
+  console.log(err.response?.data);
 
-setError("Invalid email or password");
-
+  setError(
+    err.response?.data?.message ||
+    "Invalid email or password"
+  );
 }
 
 };
