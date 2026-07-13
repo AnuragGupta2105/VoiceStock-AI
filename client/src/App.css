@@ -1,0 +1,226 @@
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  font-family:"Poppins",sans-serif;
+  background:#F6F8F4;
+  color:#222;
+  overflow-x:hidden;
+}
+
+.app{
+
+  width:100%;
+  min-height:100vh;
+
+}
+
+.container{
+
+  width:92%;
+  max-width:1400px;
+  margin:auto;
+
+}
+
+/* every section */
+
+section{
+
+  width:92%;
+  max-width:1400px;
+
+  margin:auto;
+
+  padding:45px 0;
+
+}
+
+/* remove huge gaps */
+
+.hero{
+
+  padding-top:45px;
+  padding-bottom:55px;
+
+}
+
+.dashboard{
+
+  padding-top:25px;
+  padding-bottom:45px;
+
+}
+
+.voice-command{
+
+  padding-top:30px;
+  padding-bottom:40px;
+
+}
+
+.shopping-workspace{
+
+  padding-top:35px;
+  padding-bottom:45px;
+
+}
+
+footer{
+
+  margin-top:40px;
+
+}
+
+/* section titles */
+
+.section-header{
+
+  margin-bottom:24px;
+
+}
+
+.section-header h2{
+
+  font-size:34px;
+
+  font-weight:700;
+
+  color:#222;
+
+  margin-bottom:6px;
+
+}
+
+.section-header p{
+
+  color:#666;
+
+  font-size:16px;
+
+}
+
+/* cards */
+
+.card{
+
+  background:white;
+
+  border-radius:22px;
+
+  box-shadow:0 10px 30px rgba(0,0,0,.06);
+
+}
+
+/* scrollbar */
+
+::-webkit-scrollbar{
+
+  width:8px;
+
+}
+
+::-webkit-scrollbar-thumb{
+
+  background:#4F6F52;
+
+  border-radius:20px;
+
+}
+
+/* DARK MODE */
+
+.dark{
+
+  background:#161616;
+
+  color:white;
+
+}
+
+.dark section{
+
+  background:transparent;
+
+}
+
+.dark .card{
+
+  background:#222;
+
+  color:white;
+
+}
+
+.dark .section-header h2{
+
+  color:white;
+
+}
+
+.dark .section-header p{
+
+  color:#bbb;
+
+}
+
+.dark body{
+
+  background:#161616;
+
+}
+
+/* Responsive */
+
+@media(max-width:1200px){
+
+section{
+
+width:94%;
+
+}
+
+}
+
+@media(max-width:900px){
+
+section{
+
+padding:35px 0;
+
+}
+
+.section-header h2{
+
+font-size:28px;
+
+}
+
+}
+
+@media(max-width:600px){
+
+section{
+
+width:95%;
+
+padding:28px 0;
+
+}
+
+}
+.app{
+
+padding-top:120px;
+
+}
+.app{
+padding-top:110px;
+}

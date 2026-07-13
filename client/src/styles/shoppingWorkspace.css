@@ -1,0 +1,132 @@
+/* ==========================================
+   SHOPPING WORKSPACE
+========================================== */
+
+.shopping-workspace{
+
+display:grid;
+
+grid-template-columns:2.3fr 1fr;
+
+gap:22px;
+
+align-items:start;
+
+margin-top:25px;
+
+}
+
+.workspace-left{
+
+display:flex;
+
+flex-direction:column;
+
+gap:22px;
+
+}
+
+.workspace-right{
+
+display:flex;
+
+flex-direction:column;
+
+gap:22px;
+
+position:sticky;
+
+top:110px;
+
+}
+
+/* Shared Card Style */
+
+
+
+.workspace-left > *:hover,
+
+.workspace-right > *:hover{
+
+transform:translateY(-3px);
+
+}
+
+/* Better spacing */
+
+.shopping-section{
+
+margin:0;
+
+padding:0;
+
+}
+
+.recommendation{
+
+margin:0;
+
+padding:0;
+
+}
+
+.activity-card{
+
+margin:0;
+
+}
+
+/* Dark Mode */
+
+.dark .workspace-left > *,
+
+.dark .workspace-right > *{
+
+background:#1F1F1F;
+
+border:1px solid #2F2F2F;
+
+box-shadow:none;
+
+}
+
+/* Tablet */
+
+@media(max-width:1100px){
+
+.shopping-workspace{
+
+grid-template-columns:1fr;
+
+}
+
+
+.workspace-right{
+
+position:static;
+
+}
+
+}
+
+/* Mobile */
+
+@media(max-width:768px){
+
+.shopping-workspace{
+
+gap:20px;
+
+padding:10px 0 30px;
+
+}
+
+.workspace-left,
+
+.workspace-right{
+
+gap:20px;
+
+}
+
+}

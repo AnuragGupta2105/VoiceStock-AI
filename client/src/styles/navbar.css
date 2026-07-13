@@ -1,0 +1,749 @@
+/* ===========================
+   NAVBAR
+=========================== */
+.navbar{
+
+position:fixed;
+
+top:0;
+
+left:0;
+
+right:0;
+
+width:100%;
+
+height:85px;
+
+padding:0 40px;
+
+display:flex;
+
+align-items:center;
+
+justify-content:space-between;
+
+background:rgba(255,255,255,.95);
+
+backdrop-filter:blur(20px);
+
+-webkit-backdrop-filter:blur(20px);
+
+border-bottom:1px solid rgba(0,0,0,.05);
+
+box-shadow:0 10px 30px rgba(0,0,0,.08);
+
+z-index:99999;
+
+border-radius:0;
+
+transform:none;
+
+max-width:none;
+
+}
+
+/* ===========================
+   LOGO
+=========================== */
+
+.logo{
+
+display:flex;
+
+align-items:center;
+
+gap:16px;
+
+min-width:260px;
+
+}
+
+.logo-icon{
+
+width:54px;
+
+height:54px;
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+background:#4F6F52;
+
+color:#fff;
+
+font-size:24px;
+
+border-radius:18px;
+
+box-shadow:0 10px 25px rgba(79,111,82,.3);
+
+}
+
+.logo-text h2{
+
+font-size:20px;
+
+font-weight:700;
+
+margin:0;
+
+color:#222;
+
+}
+
+.logo-text p{
+
+margin-top:4px;
+
+font-size:13px;
+
+color:#777;
+
+}
+
+/* ===========================
+   RIGHT SIDE
+=========================== */
+
+.navbar-right{
+
+display:flex;
+
+align-items:center;
+
+justify-content:flex-end;
+
+gap:12px;
+
+flex:1;
+
+margin-left:40px;
+
+}
+
+/* ===========================
+   SEARCH
+=========================== */
+
+.search-container{
+
+    position:relative;
+
+    flex:1;
+
+    max-width:620px;
+
+}
+
+.search-box{
+
+    height:52px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    padding:0 18px;
+
+    background:#F5F6F3;
+
+    border-radius:28px;
+
+    border:1px solid transparent;
+
+}
+
+.search-box input{
+
+    flex:1;
+
+    border:none;
+
+    background:none;
+
+    outline:none;
+
+    font-size:15px;
+
+}
+
+/* Dropdown */
+
+.search-suggestions{
+
+    position:absolute;
+
+    top:60px;
+
+    left:0;
+
+    width:100%;
+
+    background:white;
+
+    border-radius:18px;
+
+    overflow:hidden;
+
+    box-shadow:0 15px 40px rgba(0,0,0,.15);
+
+    border:1px solid #ececec;
+
+    z-index:999999;
+
+    max-height:260px;
+
+    overflow-y:auto;
+
+}
+
+/* Each product */
+
+.search-item{
+
+    width:100%;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    padding:14px 18px;
+
+    border:none;
+
+    background:white;
+
+    cursor:pointer;
+
+    text-align:left;
+
+    font-size:15px;
+
+    transition:.2s;
+
+}
+
+.search-item:hover{
+
+    background:#EEF6EE;
+
+}
+
+/* No result */
+
+.no-result{
+
+    padding:18px;
+
+    text-align:center;
+
+    color:#888;
+
+    font-size:14px;
+
+}
+
+/* ===========================
+   CART
+=========================== */
+
+.cart-info{
+
+height:52px;
+
+padding:0 20px;
+
+display:flex;
+
+align-items:center;
+
+gap:8px;
+
+background:#EDF5EE;
+
+border-radius:26px;
+
+font-weight:600;
+
+color:#355234;
+
+white-space:nowrap;
+
+}
+
+/* ===========================
+   THEME BUTTON
+=========================== */
+
+.theme-btn{
+
+width:100px;
+
+height:100px;
+
+border:none;
+
+border-radius:50%;
+
+background:#EDF5EE;
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+cursor:pointer;
+
+font-size:18px;
+
+transition:.3s;
+
+}
+
+.theme-btn:hover{
+
+transform:rotate(180deg);
+
+background:#4F6F52;
+
+color:white;
+
+}
+
+/* ===========================
+   VOICE BUTTON
+=========================== */
+
+.voice-status{
+
+height:52px;
+
+padding:0 22px;
+
+border:none;
+
+border-radius:28px;
+
+background:#4F6F52;
+
+color:white;
+
+display:flex;
+
+align-items:center;
+
+gap:10px;
+
+font-weight:600;
+
+cursor:pointer;
+
+transition:.3s;
+
+}
+
+.voice-status:hover{
+
+background:#3d5c41;
+
+transform:translateY(-2px);
+
+}
+
+/* ===========================
+   DARK MODE
+=========================== */
+
+.dark .navbar{
+
+background:rgba(30,30,30,.95);
+
+border-color:#353535;
+
+}
+
+.dark .logo-text h2{
+
+color:white;
+
+}
+
+.dark .logo-text p{
+
+color:#BEBEBE;
+
+}
+
+.dark .search-box{
+
+background:#292929;
+
+border-color:#393939;
+
+}
+
+.dark .search-box input{
+
+color:white;
+
+}
+
+.dark .search-box input::placeholder{
+
+color:#888;
+
+}
+
+.dark .search-box svg{
+
+color:#BEBEBE;
+
+}
+
+.dark .cart-info{
+
+background:#365338;
+
+color:white;
+
+}
+
+.dark .theme-btn{
+
+background:#2D2D2D;
+
+color:white;
+
+}
+
+.dark .voice-status{
+
+background:#365338;
+
+}
+
+/* ===========================
+   RESPONSIVE
+=========================== */
+
+@media(max-width:1100px){
+
+.navbar{
+
+height:auto;
+
+padding:18px;
+
+flex-direction:column;
+
+gap:18px;
+
+}
+
+.logo{
+
+width:100%;
+
+justify-content:center;
+
+}
+
+.navbar-right{
+
+width:100%;
+
+margin:0;
+
+flex-wrap:wrap;
+
+justify-content:center;
+
+}
+
+.search-box{
+
+width:100%;
+
+max-width:none;
+
+}
+
+}
+
+@media(max-width:700px){
+
+.cart-info{
+
+display:none;
+
+}
+
+.voice-status{
+
+padding:0 16px;
+
+font-size:14px;
+
+}
+
+.logo-text h2{
+
+font-size:18px;
+
+}
+
+.logo-text p{
+
+font-size:12px;
+
+}
+
+}
+/* ==========================================
+   PROFILE DROPDOWN
+========================================== */
+
+.profile-wrapper{
+    position:relative;
+    display:flex;
+    align-items:center;
+}
+
+.profile-btn{
+    display:flex;
+    align-items:center;
+    gap:12px;
+
+    height:52px;
+    padding:0 16px;
+
+    background:#EEF6EE;
+    border:none;
+    border-radius:30px;
+
+    cursor:pointer;
+    transition:.25s;
+}
+
+.profile-btn:hover{
+    background:#E4F0E4;
+}
+
+.profile-avatar{
+    width:38px;
+    height:38px;
+
+    border-radius:50%;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    background:#4F6F52;
+    color:white;
+
+    font-size:18px;
+    font-weight:700;
+
+    flex-shrink:0;
+}
+
+.profile-avatar.large{
+    width:72px;
+    height:72px;
+
+    font-size:30px;
+
+    margin-bottom:12px;
+}
+
+.profile-btn span{
+    font-size:15px;
+    font-weight:600;
+    color:#2d2d2d;
+}
+
+.profile-btn svg:last-child{
+    font-size:13px;
+    color:#4F6F52;
+}
+
+/* ==========================================
+   MENU
+========================================== */
+
+.profile-menu{
+
+    position:absolute;
+
+    top:64px;
+    right:0;
+
+    width:280px;
+
+    background:#fff;
+
+    border-radius:18px;
+
+    overflow:hidden;
+
+    border:1px solid #e5e5e5;
+
+    box-shadow:0 18px 45px rgba(0,0,0,.15);
+
+    z-index:999999;
+
+    display:flex;
+    flex-direction:column;
+}
+
+.profile-header{
+
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+
+    padding:24px;
+
+    background:#F8FBF8;
+
+    border-bottom:1px solid #ececec;
+
+    text-align:center;
+}
+
+.profile-header h4{
+
+    margin:12px 0 4px;
+
+    font-size:19px;
+
+    color:#222;
+}
+
+.profile-header p{
+
+    margin:0;
+
+    font-size:13px;
+
+    color:#777;
+
+    word-break:break-word;
+}
+
+.profile-menu button{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+
+    width:100%;
+
+    padding:15px 20px;
+
+    border:none;
+
+    background:white;
+
+    cursor:pointer;
+
+    text-align:left;
+
+    font-size:15px;
+
+    font-weight:500;
+
+    transition:.2s;
+}
+
+.profile-menu button svg{
+
+    width:18px;
+
+    min-width:18px;
+
+    color:#4F6F52;
+
+    font-size:17px;
+}
+
+.profile-menu button span{
+
+    flex:1;
+}
+
+.profile-menu button:hover{
+
+    background:#F3F8F3;
+}
+
+.profile-menu button:last-child{
+
+    color:#d32f2f;
+}
+
+.profile-menu button:last-child svg{
+
+    color:#d32f2f;
+}
+
+/* ==========================================
+   DARK MODE
+========================================== */
+
+.dark .profile-btn{
+    background:#2B2B2B;
+}
+
+.dark .profile-btn span{
+    color:white;
+}
+
+.dark .profile-menu{
+    background:#242424;
+    border-color:#383838;
+}
+
+.dark .profile-header{
+    background:#2D2D2D;
+}
+
+.dark .profile-header h4{
+    color:white;
+}
+
+.dark .profile-header p{
+    color:#bfbfbf;
+}
+
+.dark .profile-menu button{
+    background:#242424;
+    color:white;
+}
+
+.dark .profile-menu button:hover{
+    background:#323232;
+}
+
+@media(max-width:768px){
+
+    .profile-btn span{
+        display:none;
+    }
+
+    .profile-menu{
+        width:250px;
+    }
+}

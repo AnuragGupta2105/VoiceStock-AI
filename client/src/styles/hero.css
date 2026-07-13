@@ -1,0 +1,553 @@
+/* ==========================================
+   HERO SECTION
+========================================== */
+
+.hero{
+
+display:grid;
+
+grid-template-columns:1.1fr .9fr;
+
+align-items:center;
+
+gap:70px;
+
+padding:40px 0 70px;
+
+}
+
+.dark .hero{
+
+color:white;
+
+}
+
+/* ==========================================
+   LEFT SIDE
+========================================== */
+
+.hero-left{
+
+display:flex;
+
+flex-direction:column;
+
+justify-content:center;
+
+}
+
+.hero-tag{
+
+display:inline-flex;
+
+align-items:center;
+
+gap:10px;
+
+padding:10px 18px;
+
+background:#EDF5EE;
+
+color:#4F6F52;
+
+font-weight:600;
+
+border-radius:30px;
+
+width:max-content;
+
+margin-bottom:24px;
+
+}
+
+.dark .hero-tag{
+
+background:#355438;
+
+color:#DFF6DD;
+
+}
+
+.hero h1{
+
+font-size:68px;
+
+font-weight:800;
+
+line-height:1.05;
+
+margin-bottom:24px;
+
+color:#222;
+
+}
+
+.dark .hero h1{
+
+color:white;
+
+}
+
+.hero p{
+
+font-size:18px;
+
+line-height:1.8;
+
+color:#666;
+
+max-width:620px;
+
+margin-bottom:35px;
+
+}
+
+.dark .hero p{
+
+color:#B8B8B8;
+
+}
+
+/* ==========================================
+   BUTTONS
+========================================== */
+
+.hero-buttons{
+
+display:flex;
+
+gap:18px;
+
+margin-bottom:30px;
+
+}
+
+.primary-btn{
+
+height:56px;
+
+padding:0 30px;
+
+border:none;
+
+border-radius:16px;
+
+background:#4F6F52;
+
+color:white;
+
+font-size:16px;
+
+font-weight:600;
+
+cursor:pointer;
+
+transition:.3s;
+
+}
+
+.primary-btn:hover{
+
+transform:translateY(-3px);
+
+box-shadow:0 12px 22px rgba(79,111,82,.35);
+
+}
+
+.secondary-btn{
+
+height:56px;
+
+padding:0 30px;
+
+background:white;
+
+border:2px solid #E4E4E4;
+
+border-radius:16px;
+
+font-size:16px;
+
+font-weight:600;
+
+cursor:pointer;
+
+transition:.3s;
+
+}
+
+.secondary-btn:hover{
+
+transform:translateY(-3px);
+
+}
+
+.dark .secondary-btn{
+
+background:#242424;
+
+border-color:#363636;
+
+color:white;
+
+}
+
+/* ==========================================
+   FEATURES
+========================================== */
+
+.hero-rating{
+
+display:flex;
+
+flex-wrap:wrap;
+
+gap:22px;
+
+margin-top:10px;
+
+}
+
+.hero-rating span{
+
+font-size:15px;
+
+color:#555;
+
+font-weight:500;
+
+}
+
+.dark .hero-rating span{
+
+color:#B8B8B8;
+
+}
+
+/* ==========================================
+   RIGHT SIDE CARD
+========================================== */
+
+.hero-right{
+
+display:flex;
+
+justify-content:center;
+
+}
+
+.voice-preview{
+
+width:420px;
+
+background:white;
+
+border-radius:28px;
+
+padding:28px;
+
+box-shadow:0 18px 45px rgba(0,0,0,.08);
+
+transition:.35s;
+
+}
+
+.voice-preview:hover{
+
+transform:translateY(-6px);
+
+}
+
+.dark .voice-preview{
+
+background:#232323;
+
+border:1px solid #343434;
+
+box-shadow:none;
+
+}
+
+/* ==========================================
+   CARD HEADER
+========================================== */
+
+.preview-header{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+margin-bottom:22px;
+
+}
+
+.live{
+
+font-size:13px;
+
+font-weight:700;
+
+color:#2FAE57;
+
+}
+
+.preview-title{
+
+font-size:15px;
+
+font-weight:700;
+
+color:#555;
+
+}
+
+.dark .preview-title{
+
+color:#ddd;
+
+}
+
+/* ==========================================
+   VOICE QUERY
+========================================== */
+
+.voice-query{
+
+background:#EDF5EE;
+
+padding:15px;
+
+border-radius:16px;
+
+font-weight:600;
+
+color:#4F6F52;
+
+margin-bottom:22px;
+
+}
+
+.dark .voice-query{
+
+background:#355438;
+
+color:#DDF7E0;
+
+}
+
+/* ==========================================
+   PRODUCT LIST
+========================================== */
+
+.preview-products{
+
+display:flex;
+
+flex-direction:column;
+
+gap:12px;
+
+margin-bottom:20px;
+
+}
+
+.preview-item{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+padding:14px 16px;
+
+background:#F7F8F6;
+
+border-radius:14px;
+
+transition:.3s;
+
+}
+
+.preview-item:hover{
+
+background:#EDF5EE;
+
+}
+
+.dark .preview-item{
+
+background:#2B2B2B;
+
+}
+
+.preview-left{
+
+display:flex;
+
+align-items:center;
+
+gap:10px;
+
+font-weight:600;
+
+}
+
+.preview-price{
+
+font-weight:700;
+
+color:#4F6F52;
+
+}
+
+/* ==========================================
+   TOTAL
+========================================== */
+
+.preview-total{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+margin-top:15px;
+
+padding-top:18px;
+
+border-top:1px solid #ECECEC;
+
+font-size:19px;
+
+font-weight:700;
+
+}
+
+.dark .preview-total{
+
+border-color:#3a3a3a;
+
+}
+
+.total-price{
+
+color:#4F6F52;
+
+}
+
+/* ==========================================
+   STATUS
+========================================== */
+
+.preview-status{
+
+margin-top:18px;
+
+padding:14px;
+
+background:#EDF5EE;
+
+border-radius:14px;
+
+text-align:center;
+
+font-weight:600;
+
+color:#4F6F52;
+
+}
+
+.dark .preview-status{
+
+background:#355438;
+
+color:#DDF7E0;
+
+}
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media(max-width:1100px){
+
+.hero{
+
+grid-template-columns:1fr;
+
+gap:50px;
+
+text-align:center;
+
+}
+
+.hero-left{
+
+align-items:center;
+
+}
+
+.hero h1{
+
+font-size:54px;
+
+}
+
+.voice-preview{
+
+width:100%;
+
+max-width:430px;
+
+}
+
+.hero-rating{
+
+justify-content:center;
+
+}
+
+}
+
+@media(max-width:700px){
+
+.hero{
+
+padding:30px 0 50px;
+
+}
+
+.hero h1{
+
+font-size:42px;
+
+}
+
+.hero-buttons{
+
+flex-direction:column;
+
+width:100%;
+
+}
+
+.primary-btn,
+
+.secondary-btn{
+
+width:100%;
+
+}
+
+.voice-preview{
+
+padding:22px;
+
+}
+
+}
