@@ -2,39 +2,82 @@ import { Routes, Route, Navigate } from "react-router-dom";
 
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import MainLayout from "./MainLayout";
 import Profile from "./pages/Profile";
-function App() {
+
+import MainLayout from "./MainLayout";
+
+function ProtectedRoute({ children }) {
   const token = localStorage.getItem("token");
 
+  if (!token) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return children;
+}
+
+function PublicRoute({ children }) {
+  const token = localStorage.getItem("token");
+
+  if (token) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  return children;
+}
+
+export default function App() {
   return (
     <Routes>
+      {/* Default Route */}
       <Route
         path="/"
+        element={<Navigate to="/dashboard" replace />}
+      />
+
+      {/* Public Routes */}
+      <Route
+        path="/login"
         element={
-          token ? <Navigate to="/dashboard" replace /> : <Navigate to="/login" replace />
+          <PublicRoute>
+            <Login />
+          </PublicRoute>
         }
       />
-<Route
-  path="/profile"
-  element={
-    token ? <Profile /> : <Navigate to="/login" replace />
-  }
-/>
-      <Route path="/login" element={<Login />} />
 
-      <Route path="/register" element={<Register />} />
+      <Route
+        path="/register"
+        element={
+          <PublicRoute>
+            <Register />
+          </PublicRoute>
+        }
+      />
 
+      {/* Protected Routes */}
       <Route
         path="/dashboard"
         element={
-          token ? <MainLayout /> : <Navigate to="/login" replace />
+          <ProtectedRoute>
+            <MainLayout />
+          </ProtectedRoute>
         }
       />
 
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route
+        path="/profile"
+        element={
+          <ProtectedRoute>
+            <Profile />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Unknown Routes */}
+      <Route
+        path="*"
+        element={<Navigate to="/" replace />}
+      />
     </Routes>
   );
 }
-
-export default App;

@@ -28,34 +28,30 @@ setForm({
 
 };
 
-const login=async(e)=>{
+const login = async (e) => {
+  e.preventDefault();
 
-e.preventDefault();
+  setError("");
 
-setError("");
+  console.log("Login button clicked");
 
-try{
+  try {
+    const res = await API.post("/auth/login", form);
 
-const res = await API.post(
-  "/auth/login",
-  form
-);
+    console.log("Login Success:", res.data);
 
-localStorage.setItem("token",res.data.token);
+    localStorage.setItem("token", res.data.token);
+    localStorage.setItem("user", JSON.stringify(res.data.user));
 
-localStorage.setItem("user",JSON.stringify(res.data.user));
+    console.log("Navigating to dashboard...");
+window.location.replace("/dashboard");
+  } catch (err) {
+    console.log("Login Error:", err.response?.data || err.message);
 
-navigate("/dashboard");
-
-}catch (err) {
-  console.log(err.response?.data);
-
-  setError(
-    err.response?.data?.message ||
-    "Invalid email or password"
-  );
-}
-
+    setError(
+      err.response?.data?.message || "Login Failed"
+    );
+  }
 };
 
 return(
