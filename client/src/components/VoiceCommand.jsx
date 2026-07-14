@@ -7,7 +7,7 @@ import { parseCommand } from "../utils/commandParser";
 import { findProduct } from "../utils/productLookup";
 import { startVoiceRecognition } from "../utils/speechRecognition";
 import { speak } from "../utils/speak";
-
+import getSeasonalSuggestion from "../utils/getSeasonalSuggestion";
 import {
   removeItem,
   searchItem,
@@ -194,6 +194,14 @@ msg =
 if (recommendation) {
   msg += ` ${recommendation}`;
 }
+const seasonal =
+  getSeasonalSuggestion();
+
+if (seasonal) {
+
+  msg += ` ${seasonal}`;
+
+}
 
     } else {
 
@@ -219,7 +227,14 @@ if (recommendation) {
       if (recommendation) {
         msg += ` ${recommendation}`;
       }
+const seasonal =
+  getSeasonalSuggestion();
 
+if (seasonal) {
+
+  msg += ` ${seasonal}`;
+
+}
     }
 
     setLastItem(product.name);
