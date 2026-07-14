@@ -55,10 +55,9 @@ export default function Register() {
       setLoading(false);
 
       setError(
+err.response?.data?.message ||
 
-        err.response?.data?.message ||
-
-        "Registration Failed. Please try again."
+"Unable to create account."
 
       );
 

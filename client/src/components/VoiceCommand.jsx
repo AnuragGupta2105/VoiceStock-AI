@@ -114,29 +114,37 @@ function VoiceCommand({
 
     setMessage("🎤 Listening...");
 
-    startVoiceRecognition((voiceText) => {
+   startVoiceRecognition((voiceText, error) => {
 
-      setIsListening(false);
+  setIsListening(false);
 
-      if (!voiceText) {
+  if (error) {
 
-        updateMessage(
+    updateMessage(error);
 
-          "Sorry, I couldn't hear anything."
+    return;
 
-        );
+  }
 
-        return;
+  if (!voiceText) {
 
-      }
+    updateMessage(
+      "Sorry, I couldn't hear anything."
+    );
 
-      setCommand(voiceText);
+    return;
 
-      setMessage(`🤖 Understood: "${voiceText}"`);
+  }
 
-      processCommand(voiceText);
+  setCommand(voiceText);
 
-    });
+  setMessage(
+    `🤖 Understood: "${voiceText}"`
+  );
+
+  processCommand(voiceText);
+
+});
 
   };
 
@@ -362,15 +370,43 @@ console.log(result);
 
     }
 
-    catch (err) {
+catch (err) {
 
-      console.log(err);
+  console.error(err);
 
-      msg =
+  if (!navigator.onLine) {
 
-        "Oops! Something went wrong. Please try again.";
+    msg = "No internet connection. Please check your internet.";
 
-    }
+  }
+
+  else if (err.response?.status === 401) {
+
+    msg = "Session expired. Please login again.";
+
+  }
+
+  else if (err.response?.status === 404) {
+
+    msg = "Requested item was not found.";
+
+  }
+
+  else if (err.response?.status === 500) {
+
+    msg = "Server is currently unavailable. Please try again later.";
+
+  }
+
+  else {
+
+    msg =
+      err.response?.data?.message ||
+      "Something went wrong. Please try again.";
+
+  }
+
+}
 
     updateMessage(msg);
 

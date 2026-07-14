@@ -51,9 +51,13 @@ window.location.replace("/dashboard");
    catch (err) {
     console.log("Login Error:", err.response?.data || err.message);
 setLoading(false);
-    setError(
-      err.response?.data?.message || "Login Failed"
-    );
+   setError(
+
+err.response?.data?.message ||
+
+"Invalid email or password."
+
+);
   }
 };
 

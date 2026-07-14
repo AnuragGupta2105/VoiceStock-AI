@@ -6,7 +6,9 @@ export function startVoiceRecognition(onResult) {
 
   if (!SpeechRecognition) {
 
-    alert("Speech Recognition is not supported in this browser.");
+    alert(
+      "Speech Recognition is not supported in this browser."
+    );
 
     return;
 
@@ -14,62 +16,54 @@ export function startVoiceRecognition(onResult) {
 
   const recognition = new SpeechRecognition();
 
-  // ==========================
-  // Configuration
-  // ==========================
-
-  recognition.lang = "en-IN"; // Better for English + Hindi
-
+  recognition.lang = "en-US";
   recognition.interimResults = false;
-
   recognition.maxAlternatives = 1;
 
-  recognition.continuous = false;
-
-  // ==========================
-  // Start after small delay
-  // ==========================
-
-  setTimeout(() => {
-
-    recognition.start();
-
-  }, 300);
-
-  // ==========================
-  // Success
-  // ==========================
+  recognition.start();
 
   recognition.onresult = (event) => {
 
     const transcript =
-      event.results[0][0].transcript.trim();
-
-    recognition.stop();
+      event.results[0][0].transcript;
 
     onResult(transcript);
 
   };
 
-  // ==========================
-  // Error
-  // ==========================
-
   recognition.onerror = (event) => {
 
-    console.log("Speech Error:", event.error);
+    let message = "";
 
-    recognition.stop();
+    switch (event.error) {
 
-    onResult("");
+      case "not-allowed":
+        message =
+          "Microphone permission denied.";
+        break;
 
-  };
+      case "network":
+        message =
+          "Network error. Check your internet.";
+        break;
 
-  // ==========================
-  // End
-  // ==========================
+      case "no-speech":
+        message =
+          "No speech detected.";
+        break;
 
-  recognition.onend = () => {
+      case "audio-capture":
+        message =
+          "No microphone found.";
+        break;
+
+      default:
+        message =
+          "Voice recognition failed.";
+
+    }
+
+    onResult(null, message);
 
     recognition.stop();
 
