@@ -121,7 +121,6 @@ const fillers = [
 ];
 
 // ==========================
-
 export function parseCommand(text) {
 
   let input = text.toLowerCase().trim();
@@ -185,40 +184,103 @@ export function parseCommand(text) {
 
   let price = null;
 
-  const priceMatch = input.match(
-    /(under|below|less than)\s*₹?\s*(\d+)/i
-  );
+  const priceMatch =
+    input.match(/under\s*₹?\s*(\d+)/i) ||
+    input.match(/below\s*₹?\s*(\d+)/i) ||
+    input.match(/less than\s*₹?\s*(\d+)/i);
 
   if (priceMatch) {
 
-    price = Number(priceMatch[2]);
+    price = Number(priceMatch[1] || priceMatch[2]);
 
   }
 
   // ======================
-  // Brand
+  // Brand Detection
   // ======================
 
   let brand = "";
 
   const brands = [
+
     "amul",
     "britannia",
     "nestle",
     "nescafe",
     "parle",
     "tata",
+    "fortune",
+    "cadbury",
+    "lays",
+    "doritos",
+    "lux",
+    "colgate",
+    "oral-b",
+    "himalaya",
+    "real",
+    "coca cola",
+    "classmate",
+    "reynolds",
+    "surf excel",
+    "vim",
+    "pampers"
+
   ];
 
-  brands.forEach((b) => {
+  for (const b of brands) {
 
     if (input.includes(b)) {
 
-      brand = b.charAt(0).toUpperCase() + b.slice(1);
+      brand = b
+        .split(" ")
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ");
+
+      break;
 
     }
 
-  });
+  }
+
+  // ======================
+  // Category Detection
+  // ======================
+
+  let category = "";
+
+  const categories = [
+
+    "dairy",
+    "bakery",
+    "grains",
+    "grocery",
+    "fruits",
+    "vegetables",
+    "snacks",
+    "beverages",
+    "personal care",
+    "cleaning",
+    "baby care",
+    "electronics",
+    "frozen",
+    "stationery"
+
+  ];
+
+  for (const cat of categories) {
+
+    if (input.includes(cat)) {
+
+      category = cat
+        .split(" ")
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ");
+
+      break;
+
+    }
+
+  }
 
   // ======================
   // Product Detection
@@ -249,8 +311,11 @@ export function parseCommand(text) {
     fillers.forEach(word => {
 
       cleaned = cleaned.replace(
+
         new RegExp("\\b" + word + "\\b", "g"),
+
         ""
+
       );
 
     });
@@ -260,9 +325,13 @@ export function parseCommand(text) {
       .replace(/\s+/g, " ")
       .trim();
 
-    item =
-      cleaned.charAt(0).toUpperCase() +
-      cleaned.slice(1);
+    if (cleaned.length > 0) {
+
+      item =
+        cleaned.charAt(0).toUpperCase() +
+        cleaned.slice(1);
+
+    }
 
   }
 
@@ -275,6 +344,8 @@ export function parseCommand(text) {
     quantity,
 
     brand,
+
+    category,
 
     price,
 

@@ -1,3 +1,7 @@
+import products from "../data/products";
+
+// ================= NORMALIZE =================
+
 export const normalize = (text) =>
   text
     .toLowerCase()
@@ -5,16 +9,14 @@ export const normalize = (text) =>
     .replace(/[.,!?]/g, "")
     .replace(/s$/, "");
 
-// ---------------- ADD ----------------
+// ================= ADD =================
 
-export function addItem(
-  shoppingList,
-  result
-) {
+export function addItem(shoppingList, result) {
 
   const index = shoppingList.findIndex(
-    item =>
-      normalize(item.name) === normalize(result.item)
+
+    item => normalize(item.name) === normalize(result.item)
+
   );
 
   if (index !== -1) {
@@ -26,7 +28,10 @@ export function addItem(
       ...updated[index],
 
       quantity:
-        updated[index].quantity + result.quantity,
+
+        updated[index].quantity +
+
+        result.quantity,
 
       status: "Added",
 
@@ -38,7 +43,7 @@ export function addItem(
 
       lastItem: updated[index].name,
 
-      message: `Added ${result.quantity} ${updated[index].name} to your shopping list.`
+      message: `Added ${result.quantity} ${updated[index].name} to your shopping list.`,
 
     };
 
@@ -49,7 +54,9 @@ export function addItem(
     id: Date.now(),
 
     name:
+
       result.item.charAt(0).toUpperCase() +
+
       result.item.slice(1),
 
     category: "Others",
@@ -66,39 +73,51 @@ export function addItem(
 
     lastItem: newItem.name,
 
-    message: `Added ${newItem.name} to your shopping list.`
+    message: `Added ${newItem.name} to your shopping list.`,
 
   };
 
 }
 
-// ---------------- REMOVE ----------------
+// ================= REMOVE =================
 
 export function removeItem(
+
   shoppingList,
+
   result
-){
 
-  let found=false;
+) {
 
-  const updated=shoppingList.map(item=>{
+  let found = false;
 
-    if(
-      normalize(item.name)===normalize(result.item)
-    ){
+  const updated = shoppingList.map(item => {
 
-      found=true;
+    if (
 
-      return{
+      normalize(item.name) ===
+
+      normalize(result.item)
+
+    ) {
+
+      found = true;
+
+      return {
 
         ...item,
 
-        quantity:Math.max(
+        quantity: Math.max(
+
           0,
-          item.quantity-result.quantity
+
+          item.quantity -
+
+            result.quantity
+
         ),
 
-        status:"Pending",
+        status: "Pending",
 
       };
 
@@ -108,40 +127,145 @@ export function removeItem(
 
   });
 
-  return{
+  return {
 
     found,
 
     updated,
 
-    message:found
-      ?`Removed ${result.quantity} ${result.item}.`
-      :"Product not found."
+    message: found
+
+      ? `Removed ${result.quantity} ${result.item}.`
+
+      : "Product not found.",
 
   };
 
 }
 
-// ---------------- SEARCH ----------------
+// ================= SEARCH =================
 
-export function searchItem(
-  shoppingList,
-  result
-){
+export function searchItem(result) {
 
-  const found=shoppingList.find(item=>
+  let filtered = [...products];
 
-    normalize(item.name)===normalize(result.item)
+  // -------------------------
+  // Product Name
+  // -------------------------
 
-  );
+  if (result.item) {
 
-  return{
+    filtered = filtered.filter(product =>
 
-    found,
+      normalize(product.name).includes(
 
-    message:found
-      ?`${found.name} is already in your shopping list. Need ${found.quantity}.`
-      :"Product not found."
+        normalize(result.item)
+
+      )
+
+    );
+
+  }
+
+  // -------------------------
+  // Brand
+  // -------------------------
+
+  if (result.brand) {
+
+    filtered = filtered.filter(product =>
+
+      product.brand &&
+
+      normalize(product.brand).includes(
+
+        normalize(result.brand)
+
+      )
+
+    );
+
+  }
+
+  // -------------------------
+  // Category
+  // -------------------------
+
+  if (result.category) {
+
+    filtered = filtered.filter(product =>
+
+      product.category &&
+
+      normalize(product.category).includes(
+
+        normalize(result.category)
+
+      )
+
+    );
+
+  }
+
+  // -------------------------
+  // Price
+  // -------------------------
+
+  if (result.price) {
+
+    filtered = filtered.filter(product =>
+
+      product.price <= result.price
+
+    );
+
+  }
+
+  // -------------------------
+  // No Result
+  // -------------------------
+
+  if (filtered.length === 0) {
+
+    return {
+
+      found: false,
+
+      items: [],
+
+      message:
+
+        "Sorry, I couldn't find any matching products.",
+
+    };
+
+  }
+
+  // -------------------------
+  // Format Response
+  // -------------------------
+
+  const list = filtered
+
+    .map(
+
+      product =>
+
+        `${product.name} | ${product.brand} | ₹${product.price}`
+
+    )
+
+    .join(", ");
+
+  return {
+
+    found: true,
+
+    items: filtered,
+
+    message:
+
+      `Found ${filtered.length} product(s): ${list}.`,
 
   };
 

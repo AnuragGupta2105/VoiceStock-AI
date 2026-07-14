@@ -2,41 +2,52 @@ import { useState } from "react";
 import { FaMicrophone, FaPaperPlane } from "react-icons/fa";
 
 import "../styles/voiceCommand.css";
-import getRecommendation from "../utils/getRecommendation";
+
 import { parseCommand } from "../utils/commandParser";
 import { findProduct } from "../utils/productLookup";
 import { startVoiceRecognition } from "../utils/speechRecognition";
 import { speak } from "../utils/speak";
+
+import getRecommendation from "../utils/getRecommendation";
 import getSeasonalSuggestion from "../utils/getSeasonalSuggestion";
+import getSubstitute from "../utils/getSubstitute";
+
 import {
   removeItem,
   searchItem,
 } from "../utils/shoppingActions";
-import getSubstitute from "../utils/getSubstitute";
+
 import {
   addShoppingItem,
   updateShoppingItem,
 } from "../api/shoppingApi";
 
 function VoiceCommand({
+
   shoppingList,
+
   setShoppingList,
+
   setLastItem,
+
   setHistory,
+
   loadShoppingItems,
+
 }) {
 
   const [command, setCommand] = useState("");
 
- const [message, setMessage] = useState(
-  "👋 Hello! I can understand English, Hindi and Hinglish. Try saying 'Add Milk' or 'Mujhe doodh chahiye'."
-);
+  const [message, setMessage] = useState(
 
-  const [isListening, setIsListening] =
-    useState(false);
+    "👋 Welcome! I understand English, Hindi and Hinglish. Try saying 'Add Milk' or 'Mujhe doodh chahiye'."
+
+  );
+
+  const [isListening, setIsListening] = useState(false);
 
   // =====================================
-  // Update Assistant Message
+  // Assistant Message
   // =====================================
 
   const updateMessage = (text) => {
@@ -101,7 +112,8 @@ function VoiceCommand({
 
     setIsListening(true);
 
-setMessage("🎤 Listening...");
+    setMessage("🎤 Listening...");
+
     startVoiceRecognition((voiceText) => {
 
       setIsListening(false);
@@ -109,7 +121,9 @@ setMessage("🎤 Listening...");
       if (!voiceText) {
 
         updateMessage(
+
           "Sorry, I couldn't hear anything."
+
         );
 
         return;
@@ -118,9 +132,7 @@ setMessage("🎤 Listening...");
 
       setCommand(voiceText);
 
-     setMessage(
-  `🤖 Understood: "${voiceText}"`
-);
+      setMessage(`🤖 Understood: "${voiceText}"`);
 
       processCommand(voiceText);
 
@@ -137,488 +149,562 @@ setMessage("🎤 Listening...");
     processCommand(command);
 
   };
-
-  // =====================================
+    // =====================================
   // Process Voice/Text Command
   // =====================================
+
   const processCommand = async (inputCommand) => {
 
-  if (!inputCommand.trim()) return;
+    if (!inputCommand.trim()) return;
 
-  const result = parseCommand(inputCommand);
+    const result = parseCommand(inputCommand);
 
-  let msg = "";
+    let msg = "";
 
-  try {
+    try {
 
-    // =====================================
-    // ADD PRODUCT
-    // =====================================
+      // =====================================
+      // ADD PRODUCT
+      // =====================================
 
-  if (result.action === "ADD") {
+      if (result.action === "ADD") {
 
-  const product = findProduct(result.item);
+        const product = findProduct(result.item);
 
-  if (!product) {
+        if (!product) {
 
-    msg = `Sorry, I couldn't find "${result.item}".`;
+          msg = `Sorry, I couldn't find "${result.item}".`;
 
-  } else {
-
-    const existing = shoppingList.find(
-      item =>
-        item.name.toLowerCase() ===
-        product.name.toLowerCase()
-    );
-
-    if (existing) {
-
-      const newQty =
-        existing.quantity +
-        (result.quantity || 1);
-
-      await updateShoppingItem(
-        existing._id,
-        {
-          quantity: newQty,
         }
-      );
 
-      const recommendation = getRecommendation(product.name);
+        else {
 
-msg =
-  result.quantity > 1
-    ? `${result.quantity} ${product.name} added to your shopping list.`
-    : `${product.name} has been added to your shopping list.`;
+          const existing = shoppingList.find(
 
-if (recommendation) {
-  msg += ` ${recommendation}`;
-}
-const seasonal =
-  getSeasonalSuggestion();
+            item =>
 
-if (seasonal) {
+              item.name.toLowerCase() ===
 
-  msg += ` ${seasonal}`;
+              product.name.toLowerCase()
 
-}
-const substitute =
-  getSubstitute(product.name);
+          );
 
-if (substitute) {
-  msg += ` ${substitute}`;
-}
+          if (existing) {
 
-    } else {
+            const newQty =
 
-      await addShoppingItem({
+              existing.quantity +
 
-        name: product.name,
-        category: product.category,
-        brand: product.brand,
-        price: product.price,
-        quantity: result.quantity || 1,
-        status: "Added",
+              (result.quantity || 1);
 
-      });
+            await updateShoppingItem(
 
-      const recommendation =
-        getRecommendation(product.name);
+              existing._id,
+
+              {
+
+                quantity: newQty,
+
+              }
+
+            );
+
+          }
+
+          else {
+
+            await addShoppingItem({
+
+              name: product.name,
+
+              category: product.category,
+
+              brand: product.brand,
+
+              price: product.price,
+
+              quantity: result.quantity || 1,
+
+              status: "Added",
+
+            });
+
+          }
+
+          msg =
+            result.quantity > 1
+              ? `${result.quantity} ${product.name} added to your shopping list.`
+              : `${product.name} has been added to your shopping list.`;
+
+          const recommendation =
+            getRecommendation(product.name);
+
+          if (recommendation) {
+
+            msg += ` ${recommendation}`;
+
+          }
+
+          const seasonal =
+            getSeasonalSuggestion();
+
+          if (seasonal) {
+
+            msg += ` ${seasonal}`;
+
+          }
+
+          const substitute =
+            getSubstitute(product.name);
+
+          if (substitute) {
+
+            msg += ` ${substitute}`;
+
+          }
+
+          setLastItem(product.name);
+
+          await refreshShoppingList();
+
+        }
+
+      }
+
+      // =====================================
+      // REMOVE PRODUCT
+      // =====================================
+
+      else if (result.action === "REMOVE") {
+
+        const data = removeItem(
+
+          shoppingList,
+
+          result
+
+        );
+
+        setShoppingList(data.updated);
+
+        msg = data.message;
+
+      }
+
+      // =====================================
+      // SEARCH PRODUCT
+      // =====================================
+
+      else if (result.action === "SEARCH") {
+
+        const data = searchItem(result);
+
+        if (!data.found) {
+
+          msg =
+            "Sorry, I couldn't find any matching products.";
+
+        }
+
+        else {
+
+          const firstFive =
+
+            data.items.slice(0, 5);
+
+          msg =
+
+            `I found ${data.items.length} product${data.items.length > 1 ? "s" : ""}. `;
+
+          firstFive.forEach((item) => {
+
+            msg += `${item.name}`;
+
+            if (item.brand) {
+
+              msg += ` by ${item.brand}`;
+
+            }
+
+            if (item.price) {
+
+              msg += ` for ₹${item.price}`;
+
+            }
+
+            msg += ". ";
+
+          });
+
+          if (data.items.length > 5) {
+
+            msg +=
+
+              `And ${data.items.length - 5} more products are available.`;
+
+          }
+
+        }
+
+      }
+
+      // =====================================
+      // UNKNOWN COMMAND
+      // =====================================
+
+      else {
+
+        msg =
+
+          "Sorry, I couldn't understand your request.";
+
+      }
+
+    }
+
+    catch (err) {
+
+      console.log(err);
 
       msg =
-        result.quantity > 1
-          ? `${result.quantity} ${product.name} added to your shopping list.`
-          : `${product.name} has been added to your shopping list.`;
 
-      if (recommendation) {
-        msg += ` ${recommendation}`;
-      }
-const seasonal =
-  getSeasonalSuggestion();
-
-if (seasonal) {
-
-  msg += ` ${seasonal}`;
-
-}
-const substitute =
-  getSubstitute(product.name);
-
-if (substitute) {
-  msg += ` ${substitute}`;
-}
-    }
-
-    setLastItem(product.name);
-
-    await refreshShoppingList();
-
-  }
-
-}
-    // =====================================
-    // REMOVE PRODUCT
-    // =====================================
-
-    else if (result.action === "REMOVE") {
-
-      const data = removeItem(
-
-        shoppingList,
-
-        result
-
-      );
-
-      setShoppingList(data.updated);
-
-      msg = data.message;
+        "Oops! Something went wrong. Please try again.";
 
     }
 
-    // =====================================
-    // SEARCH PRODUCT
-    // =====================================
+    updateMessage(msg);
 
-    else if (result.action === "SEARCH") {
+    setCommand("");
 
-      const data = searchItem(
+  };
+    return (
 
-        shoppingList,
+    <section
+      id="voice-shopping"
+      className="voice-command"
+    >
 
-        result
+      {/* ================= HEADER ================= */}
 
-      );
+      <div className="section-header">
 
-      msg = data.message;
+        <h2>🎤 AI Voice Shopping Assistant</h2>
 
-      if (result.brand) {
+        <p>
 
-        msg += ` Brand: ${result.brand}.`;
+          Speak naturally in English, Hindi or Hinglish.
 
-      }
+        </p>
 
-      if (result.price) {
+      </div>
 
-        msg += ` Showing products under ₹${result.price}.`;
+      <div className="voice-card">
 
-      }
+        {/* ================= TOP BAR ================= */}
 
-    }
+        <div className="voice-header">
 
-    // =====================================
-    // UNKNOWN COMMAND
-    // =====================================
+          <div>
 
-    else {
+            <h3>Voice Command Center</h3>
 
-      msg =
-        "Sorry, I couldn't understand your request.";
+            <p>
 
-    }
+              Examples:
 
-  }
+              <strong>
 
-  catch (err) {
+                {" "}
 
-    console.log(err);
+                "Add Milk", "Mujhe doodh chahiye"
 
-    msg =
-"Oops! Something went wrong. Please try again.";
+              </strong>
 
-  }
+            </p>
 
-  updateMessage(msg);
+          </div>
 
-  setCommand("");
+          <span
 
-};
-return (
+            className={`voice-status ${
 
-<section
-  id="voice-shopping"
-  className="voice-command"
->
+              isListening ? "active" : ""
 
-<div className="section-header">
+            }`}
 
-<h2>🎤 AI Voice Shopping Assistant</h2>
+          >
 
-<p>
+            {isListening
 
-Speak naturally in English, Hindi or Hinglish.
+              ? "🎙 Listening..."
 
-</p>
+              : "🟢 Ready"}
 
-</div>
+          </span>
 
-<div className="voice-card">
+        </div>
 
-{/* ================= HEADER ================= */}
+        {/* ================= BIG VOICE BUTTON ================= */}
 
-<div className="voice-header">
+        <div className="voice-circle">
 
-<div>
+          <button
 
-<h3>Voice Command Center</h3>
+            className={`voice-main-btn ${
 
-<p>
+              isListening ? "active" : ""
 
-Examples:
+            }`}
 
-<strong>
+            onClick={handleVoice}
 
-{" "}
+            disabled={isListening}
 
-"Add Milk", "Mujhe doodh chahiye"
+          >
 
-</strong>
+            <FaMicrophone />
 
-</p>
+          </button>
 
-</div>
+          <p>
 
-<span
-className={`voice-status ${
-isListening ? "active" : ""
-}`}
->
+            {isListening
 
-{isListening
+              ? "Listening..."
 
-? "🎙 Listening..."
+              : "Tap To Speak"}
 
-: "🟢 Ready"}
+          </p>
 
-</span>
+        </div>
 
-</div>
+        {/* ================= ASSISTANT RESPONSE ================= */}
 
-{/* ================= VOICE BUTTON ================= */}
+        <div className="assistant-console">
 
-<div className="voice-circle">
+          <h4>
 
-<button
+            🤖 Assistant
 
-className={`voice-main-btn ${
-isListening ? "active" : ""
-}`}
+          </h4>
 
-onClick={handleVoice}
+          <p>
 
-disabled={isListening}
+            {message}
 
->
+          </p>
 
-<FaMicrophone />
+        </div>
 
-</button>
+        {/* ================= INPUT ================= */}
 
-<p>
+        <div className="voice-command-box">
 
-{isListening
+          <input
 
-? "Listening..."
+            value={command}
 
-: "Tap To Speak"}
+            onChange={(e) =>
 
-</p>
+              setCommand(e.target.value)
 
-</div>
+            }
 
-{/* ================= RESPONSE ================= */}
+            placeholder="Examples: Add Milk | Mujhe doodh chahiye | Find Coffee under 300"
 
-<div className="assistant-console">
+            onKeyDown={(e) => {
 
-<h4>
+              if (e.key === "Enter") {
 
-🤖 Assistant
+                handleSend();
 
-</h4>
+              }
 
-<p>
+            }}
 
-{message}
+          />
 
-</p>
+          <button
 
-</div>
+            className={`mic-btn ${
 
-{/* ================= INPUT ================= */}
+              isListening ? "listening" : ""
 
-<div className="voice-command-box">
+            }`}
 
-<input
+            onClick={handleVoice}
 
-value={command}
+            disabled={isListening}
 
-onChange={(e)=>
+          >
 
-setCommand(e.target.value)
+            <FaMicrophone />
 
-}
+          </button>
 
-placeholder='Examples: Add Milk | Mujhe doodh chahiye | Find Coffee'
+          <button
 
-onKeyDown={(e)=>{
+            className="send-btn"
 
-if(e.key==="Enter"){
+            onClick={handleSend}
 
-handleSend();
+          >
 
-}
+            <FaPaperPlane />
 
-}}
+          </button>
 
- />
+        </div>
 
-<button
+        {/* ================= QUICK COMMANDS ================= */}
 
-className={`mic-btn ${
-isListening ? "listening" : ""
-}`}
+        <div className="suggestions">
 
-onClick={handleVoice}
+          <h4>
 
-disabled={isListening}
+            ⚡ Try These Commands
 
->
+          </h4>
 
-<FaMicrophone />
+          <div className="suggestion-grid">
 
-</button>
+            <button
 
-<button
+              onClick={() =>
 
-className="send-btn"
+                processCommand("Add Milk")
 
-onClick={handleSend}
+              }
 
->
+            >
 
-<FaPaperPlane />
+              🥛 Milk
 
-</button>
+            </button>
 
-</div>
+            <button
 
-{/* ================= QUICK COMMANDS ================= */}
+              onClick={() =>
 
-<div className="suggestions">
+                processCommand("Buy Bread")
 
-<h4>
+              }
 
-⚡ Try These Commands
+            >
 
-</h4>
+              🍞 Bread
 
-<div className="suggestion-grid">
+            </button>
 
-<button
-onClick={()=>
-processCommand("Add Milk")
-}
->
+            <button
 
-🥛 Milk
+              onClick={() =>
 
-</button>
+                processCommand("Need Eggs")
 
-<button
-onClick={()=>
-processCommand("Buy Bread")
-}
->
+              }
 
-🍞 Bread
+            >
 
-</button>
+              🥚 Eggs
 
-<button
-onClick={()=>
-processCommand("Need Eggs")
-}
->
+            </button>
 
-🥚 Eggs
+            <button
 
-</button>
+              onClick={() =>
 
-<button
-onClick={()=>
-processCommand("Mujhe doodh chahiye")
-}
->
+                processCommand("Mujhe doodh chahiye")
 
-🥛 Doodh
+              }
 
-</button>
+            >
 
-<button
-onClick={()=>
-processCommand("Coffee dhoondo")
-}
->
+              🥛 Doodh
 
-☕
+            </button>
 
-Coffee
+            <button
 
-</button>
+              onClick={() =>
 
-<button
-onClick={()=>
-processCommand("2 Apples")
-}
->
+                processCommand("Coffee dhoondo")
 
-🍎 Apples
+              }
 
-</button>
+            >
 
-<button
-onClick={()=>
-processCommand("Chocolate add karo")
-}
->
+              ☕ Coffee
 
-🍫 Chocolate
+            </button>
 
-</button>
+            <button
 
-</div>
+              onClick={() =>
 
-</div>
+                processCommand("2 Apples")
 
-{/* ================= FEATURES ================= */}
+              }
 
-<div className="voice-features">
+            >
 
-<div className="feature">
+              🍎 Apples
 
-🎯 Smart Search
+            </button>
 
-</div>
+            <button
 
-<div className="feature">
+              onClick={() =>
 
-🛒 Shopping AI
+                processCommand("Chocolate add karo")
 
-</div>
+              }
 
-<div className="feature">
+            >
 
-🔊 Voice Reply
+              🍫 Chocolate
 
-</div>
+            </button>
 
-</div>
+          </div>
 
-</div>
+        </div>
+                {/* ================= FEATURES ================= */}
 
-</section>
+        <div className="voice-features">
 
-);
+          <div className="feature">
+
+            🎯 Smart Search
+
+          </div>
+
+          <div className="feature">
+
+            🛒 Shopping AI
+
+          </div>
+
+          <div className="feature">
+
+            🔊 Voice Reply
+
+          </div>
+
+          <div className="feature">
+
+            🌍 English • Hindi • Hinglish
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  );
+
 }
 
 export default VoiceCommand;
