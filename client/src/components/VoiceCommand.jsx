@@ -12,7 +12,7 @@ import {
   removeItem,
   searchItem,
 } from "../utils/shoppingActions";
-
+import getSubstitute from "../utils/getSubstitute";
 import {
   addShoppingItem,
   updateShoppingItem,
@@ -202,6 +202,12 @@ if (seasonal) {
   msg += ` ${seasonal}`;
 
 }
+const substitute =
+  getSubstitute(product.name);
+
+if (substitute) {
+  msg += ` ${substitute}`;
+}
 
     } else {
 
@@ -234,6 +240,12 @@ if (seasonal) {
 
   msg += ` ${seasonal}`;
 
+}
+const substitute =
+  getSubstitute(product.name);
+
+if (substitute) {
+  msg += ` ${substitute}`;
 }
     }
 
