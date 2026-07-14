@@ -101,10 +101,7 @@ function VoiceCommand({
 
     setIsListening(true);
 
-    updateMessage(
-  "🎤 Listening... Please tell me what you need."
-);
-
+setMessage("🎤 Listening...");
     startVoiceRecognition((voiceText) => {
 
       setIsListening(false);

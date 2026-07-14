@@ -8,7 +8,7 @@ export const speak = (text) => {
 
   utterance.lang = "en-US";
 
-  utterance.rate = 1.05;
+  utterance.rate = 1;
 
   utterance.pitch = 1;
 

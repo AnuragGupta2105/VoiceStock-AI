@@ -14,24 +14,62 @@ export function startVoiceRecognition(onResult) {
 
   const recognition = new SpeechRecognition();
 
-  recognition.lang = "en-US";
+  // ==========================
+  // Configuration
+  // ==========================
+
+  recognition.lang = "en-IN"; // Better for English + Hindi
 
   recognition.interimResults = false;
 
   recognition.maxAlternatives = 1;
 
-  recognition.start();
+  recognition.continuous = false;
+
+  // ==========================
+  // Start after small delay
+  // ==========================
+
+  setTimeout(() => {
+
+    recognition.start();
+
+  }, 300);
+
+  // ==========================
+  // Success
+  // ==========================
 
   recognition.onresult = (event) => {
 
     const transcript =
-      event.results[0][0].transcript;
+      event.results[0][0].transcript.trim();
+
+    recognition.stop();
 
     onResult(transcript);
 
   };
 
-  recognition.onerror = () => {
+  // ==========================
+  // Error
+  // ==========================
+
+  recognition.onerror = (event) => {
+
+    console.log("Speech Error:", event.error);
+
+    recognition.stop();
+
+    onResult("");
+
+  };
+
+  // ==========================
+  // End
+  // ==========================
+
+  recognition.onend = () => {
 
     recognition.stop();
 
