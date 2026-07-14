@@ -681,24 +681,6 @@ processCommand("Delete Apples")
 
 <div className="feature">
 
-🌍 English
-
-</div>
-
-<div className="feature">
-
-🇮🇳 Hindi
-
-</div>
-
-<div className="feature">
-
-💬 Hinglish
-
-</div>
-
-<div className="feature">
-
 🎯 Smart Search
 
 </div>
