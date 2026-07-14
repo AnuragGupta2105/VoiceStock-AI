@@ -3,6 +3,15 @@
 An AI-powered Voice Shopping Assistant that allows users to manage their shopping list using voice commands in **English, Hindi, and Hinglish**. The application uses Natural Language Processing (NLP) to understand user commands, provides smart product recommendations, seasonal suggestions, and substitute products while maintaining a personalized shopping experience.
 
 ---
+## 📖 Project Description
+
+VoiceStock AI is a voice-enabled shopping assistant designed to simplify shopping list management through natural voice interactions. The application allows users to add, remove, update, and search products using voice commands in English, Hindi, and Hinglish. A custom Natural Language Processing (NLP) parser interprets different speaking styles, quantities, brands, categories, and price filters to provide an intuitive shopping experience.
+
+The frontend is developed using React.js and Vite, while the backend is built with Node.js, Express.js, and MongoDB for secure user authentication and shopping list storage. Browser Speech Recognition and Speech Synthesis APIs enable voice input and spoken responses without requiring external paid AI services.
+
+To improve the shopping experience, the application provides product recommendations, seasonal suggestions, and suitable substitute products based on the selected item. It also supports voice-based product searches by category, brand, and price range, along with automatic product categorization.
+
+The application follows a responsive, mobile-friendly design with loading indicators, error handling, and real-time visual feedback. It has been deployed on Vercel, providing users with an accessible and production-ready voice shopping assistant.
 
 # 🚀 Live Demo
 
