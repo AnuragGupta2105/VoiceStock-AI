@@ -22,26 +22,26 @@ const getItems = async (req, res) => {
 
 const addItem = async (req, res) => {
   try {
-    const { name, category, brand, price, quantity } = req.body;
-
-    if (!name) {
-      return res.status(400).json({
-        message: "Item name is required",
-      });
-    }
+    console.log("========== ADD ITEM ==========");
+    console.log("User:", req.user);
+    console.log("Body:", req.body);
 
     const item = await ShoppingItem.create({
       user: req.user.id,
-      name,
-      category: category || "",
-      brand: brand || "",
-      price: price || 0,
-      quantity: quantity || 1,
+      name: req.body.name,
+      category: req.body.category || "",
+      brand: req.body.brand || "",
+      price: req.body.price || 0,
+      quantity: req.body.quantity || 1,
       status: "Added",
     });
 
+    console.log("Saved:", item);
+
     res.status(201).json(item);
+
   } catch (err) {
+    console.error("ADD ITEM ERROR:");
     console.error(err);
 
     res.status(500).json({

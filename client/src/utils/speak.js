@@ -1,14 +1,14 @@
-export function speak(text){
+export const speak = (text) => {
+  if (!("speechSynthesis" in window)) return;
 
-  const speech =
-  new SpeechSynthesisUtterance(text);
+  window.speechSynthesis.cancel();
 
-  speech.rate=1;
+  const utterance = new SpeechSynthesisUtterance(text);
 
-  speech.pitch=1;
+  utterance.lang = "en-US";
+  utterance.rate = 1;
+  utterance.pitch = 1;
+  utterance.volume = 1;
 
-  speech.lang="en-US";
-
-  window.speechSynthesis.speak(speech);
-
-}
+  window.speechSynthesis.speak(utterance);
+};
