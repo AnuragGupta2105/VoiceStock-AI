@@ -184,17 +184,16 @@ setMessage("🎤 Listening...");
         }
       );
 
-      const recommendation =
-        getRecommendation(product.name);
+      const recommendation = getRecommendation(product.name);
 
-      msg =
-        result.quantity > 1
-          ? `Added ${result.quantity} ${product.name}. Total quantity is now ${newQty}.`
-          : `${product.name} quantity updated successfully.`;
+msg =
+  result.quantity > 1
+    ? `${result.quantity} ${product.name} added to your shopping list.`
+    : `${product.name} has been added to your shopping list.`;
 
-      if (recommendation) {
-        msg += ` ${recommendation}`;
-      }
+if (recommendation) {
+  msg += ` ${recommendation}`;
+}
 
     } else {
 

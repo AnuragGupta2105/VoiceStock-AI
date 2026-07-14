@@ -50,10 +50,7 @@ const recommendations = {
     "Milk",
   ],
 
-  Apples: [
-    "Bananas",
-    "Oranges",
-  ],
+Apple: ["Banana", "Orange", "Grapes"],
 
   Banana: [
     "Milk",
