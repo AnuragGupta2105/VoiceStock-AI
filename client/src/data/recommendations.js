@@ -1,62 +1,74 @@
 const recommendations = {
+  Milk: [
+    "Bread",
+    "Butter",
+    "Eggs",
+  ],
 
-  milk: {
+  Bread: [
+    "Butter",
+    "Jam",
+    "Cheese",
+  ],
 
-    together: [
-      "Bread",
-      "Butter",
-      "Cheese",
-    ],
+  Eggs: [
+    "Bread",
+    "Milk",
+    "Cheese",
+  ],
 
-    alternatives: [
-      "Almond Milk",
-      "Oat Milk",
-    ],
+  Coffee: [
+    "Sugar",
+    "Cookies",
+    "Milk",
+  ],
 
-    seasonal: [
-      "Mango",
-      "Watermelon",
-    ],
+  Tea: [
+    "Sugar",
+    "Biscuits",
+    "Milk",
+  ],
 
-  },
+  Rice: [
+    "Dal",
+    "Oil",
+    "Salt",
+  ],
 
-  bread: {
+  Sugar: [
+    "Tea",
+    "Coffee",
+  ],
 
-    together: [
-      "Jam",
-      "Butter",
-      "Eggs",
-    ],
+  Chocolate: [
+    "Cookies",
+    "Chips",
+  ],
 
-    alternatives: [
-      "Brown Bread",
-      "Whole Wheat Bread",
-    ],
+  Cookies: [
+    "Coffee",
+    "Milk",
+  ],
 
-    seasonal: [
-      "Fresh Strawberries",
-    ],
+  Apples: [
+    "Bananas",
+    "Oranges",
+  ],
 
-  },
+  Banana: [
+    "Milk",
+    "Oats",
+  ],
 
-  eggs: {
+  Mango: [
+    "Ice Cream",
+    "Juice",
+  ],
 
-    together: [
-      "Bread",
-      "Cheese",
-      "Milk",
-    ],
-
-    alternatives: [
-      "Organic Eggs",
-    ],
-
-    seasonal: [
-      "Fresh Spinach",
-    ],
-
-  },
-
+  Chips: [
+    "Cold Drink",
+    "Chocolate",
+  ],
 };
 
 export default recommendations;

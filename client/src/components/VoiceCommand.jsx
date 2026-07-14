@@ -2,7 +2,7 @@ import { useState } from "react";
 import { FaMicrophone, FaPaperPlane } from "react-icons/fa";
 
 import "../styles/voiceCommand.css";
-
+import getRecommendation from "../utils/getRecommendation";
 import { parseCommand } from "../utils/commandParser";
 import { findProduct } from "../utils/productLookup";
 import { startVoiceRecognition } from "../utils/speechRecognition";
@@ -155,90 +155,81 @@ setMessage("🎤 Listening...");
     // ADD PRODUCT
     // =====================================
 
-    if (result.action === "ADD") {
+  if (result.action === "ADD") {
 
-      const product = findProduct(result.item);
+  const product = findProduct(result.item);
 
-      if (!product) {
+  if (!product) {
 
-        msg = `Sorry, I couldn't find "${result.item}".`;
+    msg = `Sorry, I couldn't find "${result.item}".`;
 
+  } else {
+
+    const existing = shoppingList.find(
+      item =>
+        item.name.toLowerCase() ===
+        product.name.toLowerCase()
+    );
+
+    if (existing) {
+
+      const newQty =
+        existing.quantity +
+        (result.quantity || 1);
+
+      await updateShoppingItem(
+        existing._id,
+        {
+          quantity: newQty,
+        }
+      );
+
+      const recommendation =
+        getRecommendation(product.name);
+
+      msg =
+        result.quantity > 1
+          ? `Added ${result.quantity} ${product.name}. Total quantity is now ${newQty}.`
+          : `${product.name} quantity updated successfully.`;
+
+      if (recommendation) {
+        msg += ` ${recommendation}`;
       }
 
-      else {
+    } else {
 
-        const existing = shoppingList.find(
+      await addShoppingItem({
 
-          item =>
+        name: product.name,
+        category: product.category,
+        brand: product.brand,
+        price: product.price,
+        quantity: result.quantity || 1,
+        status: "Added",
 
-            item.name.toLowerCase() ===
+      });
 
-            product.name.toLowerCase()
+      const recommendation =
+        getRecommendation(product.name);
 
-        );
+      msg =
+        result.quantity > 1
+          ? `${result.quantity} ${product.name} added to your shopping list.`
+          : `${product.name} has been added to your shopping list.`;
 
-        if (existing) {
-
-          const newQty =
-
-            existing.quantity +
-
-            (result.quantity || 1);
-
-          await updateShoppingItem(
-
-            existing._id,
-
-            {
-
-              quantity: newQty,
-
-            }
-
-          );
-
-          msg =
-            result.quantity > 1
-              ? `Added ${result.quantity} ${product.name}. Total quantity is now ${newQty}.`
-              : `Done! ${product.name} quantity has been updated.`;
-
-        }
-
-        else {
-
-          await addShoppingItem({
-
-            name: product.name,
-
-            category: product.category,
-
-            brand: product.brand,
-
-            price: product.price,
-
-            quantity:
-
-              result.quantity || 1,
-
-            status: "Added",
-
-          });
-
-          msg =
-            result.quantity > 1
-              ? `${result.quantity} ${product.name} added to your shopping list.`
-              :`Done! ${result.quantity} ${product.name} have been added to your shopping list.`;
-
-        }
-
-        setLastItem(product.name);
-
-        await refreshShoppingList();
-
+      if (recommendation) {
+        msg += ` ${recommendation}`;
       }
 
     }
 
+    setLastItem(product.name);
+
+    await refreshShoppingList();
+
+  }
+
+}
     // =====================================
     // REMOVE PRODUCT
     // =====================================
