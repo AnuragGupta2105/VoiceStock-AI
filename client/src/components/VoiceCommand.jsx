@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { FaMicrophone, FaPaperPlane } from "react-icons/fa";
+
 import "../styles/voiceCommand.css";
 
 import { parseCommand } from "../utils/commandParser";
+import { findProduct } from "../utils/productLookup";
 import { startVoiceRecognition } from "../utils/speechRecognition";
 import { speak } from "../utils/speak";
-import { findProduct } from "../utils/productLookup";
 
 import {
   removeItem,
@@ -24,318 +25,703 @@ function VoiceCommand({
   setHistory,
   loadShoppingItems,
 }) {
+
   const [command, setCommand] = useState("");
 
-  const [message, setMessage] = useState(
-    "Welcome! I'm ready for your shopping commands."
-  );
+ const [message, setMessage] = useState(
+  "👋 Hello! I can understand English, Hindi and Hinglish. Try saying 'Add Milk' or 'Mujhe doodh chahiye'."
+);
 
-  const [isListening, setIsListening] = useState(false);
+  const [isListening, setIsListening] =
+    useState(false);
 
-  // ==========================
+  // =====================================
   // Update Assistant Message
-  // ==========================
+  // =====================================
 
   const updateMessage = (text) => {
+
     setMessage(text);
 
     speak(text);
 
     if (setHistory) {
+
       setHistory((prev) => [
+
         {
+
           text,
+
           time: new Date().toLocaleTimeString([], {
+
             hour: "2-digit",
+
             minute: "2-digit",
+
           }),
+
         },
+
         ...prev.slice(0, 9),
+
       ]);
+
     }
+
   };
 
-  // ==========================
+  // =====================================
+  // Refresh Shopping List
+  // =====================================
+
+  const refreshShoppingList = async () => {
+
+    try {
+
+      await loadShoppingItems();
+
+    }
+
+    catch (err) {
+
+      console.log(err);
+
+    }
+
+  };
+
+  // =====================================
   // Voice Recognition
-  // ==========================
+  // =====================================
 
   const handleVoice = () => {
+
+    if (isListening) return;
+
     setIsListening(true);
 
-    speak("Listening");
+    updateMessage(
+  "🎤 Listening... Please tell me what you need."
+);
 
-    startVoiceRecognition((text) => {
-      setCommand(text);
+    startVoiceRecognition((voiceText) => {
 
       setIsListening(false);
 
-      speak("Processing your request");
+      if (!voiceText) {
 
-      processCommand(text);
+        updateMessage(
+          "Sorry, I couldn't hear anything."
+        );
+
+        return;
+
+      }
+
+      setCommand(voiceText);
+
+     setMessage(
+  `🤖 Understood: "${voiceText}"`
+);
+
+      processCommand(voiceText);
+
     });
+
   };
 
-  // ==========================
-  // Send Button
-  // ==========================
+  // =====================================
+  // Manual Command
+  // =====================================
 
   const handleSend = () => {
+
     processCommand(command);
+
   };
 
-  // ==========================
-  // Process Commands
-  // ==========================
-
+  // =====================================
+  // Process Voice/Text Command
+  // =====================================
   const processCommand = async (inputCommand) => {
-    if (!inputCommand.trim()) return;
 
-    const result = parseCommand(inputCommand);
+  if (!inputCommand.trim()) return;
 
-    let msg = "";
+  const result = parseCommand(inputCommand);
 
-    // ==========================
-    // ADD ITEM
-    // ==========================
+  let msg = "";
+
+  try {
+
+    // =====================================
+    // ADD PRODUCT
+    // =====================================
 
     if (result.action === "ADD") {
-      try {
-        const product = findProduct(result.item);
 
-        if (!product) {
-          msg = `Sorry. ${result.item} is not available in our catalog.`;
-        } else {
-          const existing = shoppingList.find(
-            (item) =>
-              item.name.toLowerCase() ===
-              product.name.toLowerCase()
+      const product = findProduct(result.item);
+
+      if (!product) {
+
+        msg = `Sorry, I couldn't find "${result.item}".`;
+
+      }
+
+      else {
+
+        const existing = shoppingList.find(
+
+          item =>
+
+            item.name.toLowerCase() ===
+
+            product.name.toLowerCase()
+
+        );
+
+        if (existing) {
+
+          const newQty =
+
+            existing.quantity +
+
+            (result.quantity || 1);
+
+          await updateShoppingItem(
+
+            existing._id,
+
+            {
+
+              quantity: newQty,
+
+            }
+
           );
 
-          if (existing) {
-            await updateShoppingItem(existing._id, {
-              quantity:
-                existing.quantity +
-                (result.quantity || 1),
-            });
+          msg =
+            result.quantity > 1
+              ? `Added ${result.quantity} ${product.name}. Total quantity is now ${newQty}.`
+              : `Done! ${product.name} quantity has been updated.`;
 
-            msg = `${product.name} quantity updated successfully.`;
-          } else {
-            await addShoppingItem({
-              name: product.name,
-              brand: product.brand,
-              category: product.category,
-              price: product.price,
-              quantity: result.quantity || 1,
-              status: "Added",
-            });
-
-            msg = `${product.name} added successfully.`;
-          }
-
-          setLastItem(product.name);
-
-          await loadShoppingItems();
         }
-      } catch (err) {
-        console.log(err);
 
-        msg =
-          "Sorry, I could not add the item.";
+        else {
+
+          await addShoppingItem({
+
+            name: product.name,
+
+            category: product.category,
+
+            brand: product.brand,
+
+            price: product.price,
+
+            quantity:
+
+              result.quantity || 1,
+
+            status: "Added",
+
+          });
+
+          msg =
+            result.quantity > 1
+              ? `${result.quantity} ${product.name} added to your shopping list.`
+              :`Done! ${result.quantity} ${product.name} have been added to your shopping list.`;
+
+        }
+
+        setLastItem(product.name);
+
+        await refreshShoppingList();
+
       }
+
     }
 
-    // ==========================
-    // REMOVE ITEM
-    // ==========================
+    // =====================================
+    // REMOVE PRODUCT
+    // =====================================
 
     else if (result.action === "REMOVE") {
+
       const data = removeItem(
+
         shoppingList,
+
         result
+
       );
 
       setShoppingList(data.updated);
 
       msg = data.message;
+
     }
 
-    // ==========================
-    // SEARCH ITEM
-    // ==========================
+    // =====================================
+    // SEARCH PRODUCT
+    // =====================================
 
     else if (result.action === "SEARCH") {
+
       const data = searchItem(
+
         shoppingList,
+
         result
+
       );
 
       msg = data.message;
+
+      if (result.brand) {
+
+        msg += ` Brand: ${result.brand}.`;
+
+      }
+
+      if (result.price) {
+
+        msg += ` Showing products under ₹${result.price}.`;
+
+      }
+
     }
 
-    // ==========================
-    // UNKNOWN
-    // ==========================
+    // =====================================
+    // UNKNOWN COMMAND
+    // =====================================
 
     else {
+
       msg =
-        "Sorry. I couldn't understand your command.";
+        "Sorry, I couldn't understand your request.";
+
     }
 
-    updateMessage(msg);
+  }
 
-    setCommand("");
-  };
+  catch (err) {
 
-  return (
-    <section
-      id="voice-shopping"
-      className="voice-command"
-    >
-      <div className="section-header">
-        <h2>🎤 Voice Shopping Assistant</h2>
+    console.log(err);
 
-        <p>
-          Speak naturally or type your shopping
-          request.
-        </p>
-      </div>
+    msg =
+"Oops! Something went wrong. Please try again.";
 
-      <div className="voice-card">
-        <div className="voice-header">
-          <div>
-            <h3>Voice Command Center</h3>
+  }
 
-            <p>
-              Example:
-              <strong>
-                {" "}
-                "Add two bottles of milk"
-              </strong>
-            </p>
-          </div>
+  updateMessage(msg);
 
-          <span className="voice-status">
-            {isListening
-              ? "🎙 Listening..."
-              : "🟢 AI Ready"}
-          </span>
-        </div>
+  setCommand("");
 
-        {/* Voice Button */}
+};
+return (
 
-        <div className="voice-circle">
-          <button
-            className={`voice-main-btn ${
-              isListening ? "active" : ""
-            }`}
-            onClick={handleVoice}
-          >
-            <FaMicrophone />
-          </button>
+<section
+  id="voice-shopping"
+  className="voice-command"
+>
 
-          <p>
-            {isListening
-              ? "Listening..."
-              : "Tap to Speak"}
-          </p>
-        </div>
+<div className="section-header">
 
-        {/* Assistant Response */}
+<h2>🎤 AI Voice Shopping Assistant</h2>
 
-        <div className="assistant-console">
-          <h4>📢 Assistant Response</h4>
+<p>
 
-          <p>{message}</p>
-        </div>
+Speak naturally in English, Hindi or Hinglish.
 
-        {/* Input */}
+</p>
 
-        <div className="voice-command-box">
-          <input
-            value={command}
-            onChange={(e) =>
-              setCommand(e.target.value)
-            }
-            placeholder='Example: "Add 2 bottles of milk"'
-          />
+</div>
 
-          <button
-            className={`mic-btn ${
-              isListening
-                ? "listening"
-                : ""
-            }`}
-            onClick={handleVoice}
-          >
-            <FaMicrophone />
-          </button>
+<div className="voice-card">
 
-          <button
-            className="send-btn"
-            onClick={handleSend}
-          >
-            <FaPaperPlane />
-          </button>
-        </div>
+{/* ================= HEADER ================= */}
 
-        {/* Quick Commands */}
+<div className="voice-header">
 
-        <div className="suggestions">
-          <h4>⚡ Popular Commands</h4>
+<div>
 
-          <div className="suggestion-grid">
-            <button
-              onClick={() =>
-                processCommand("Add Milk")
-              }
-            >
-              🥛 Milk
-            </button>
+<h3>Voice Command Center</h3>
 
-            <button
-              onClick={() =>
-                processCommand("Add Bread")
-              }
-            >
-              🍞 Bread
-            </button>
+<p>
 
-            <button
-              onClick={() =>
-                processCommand("Add Eggs")
-              }
-            >
-              🥚 Eggs
-            </button>
+Examples:
 
-            <button
-              onClick={() =>
-                processCommand("Add Apples")
-              }
-            >
-              🍎 Apples
-            </button>
+<strong>
 
-            <button
-              onClick={() =>
-                processCommand("Add Coffee")
-              }
-            >
-              ☕ Coffee
-            </button>
+{" "}
 
-            <button
-              onClick={() =>
-                processCommand("Add Cookies")
-              }
-            >
-              🍪 Cookies
-            </button>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
+"Add Milk", "Mujhe doodh chahiye"
+
+</strong>
+
+</p>
+
+</div>
+
+<span
+className={`voice-status ${
+isListening ? "active" : ""
+}`}
+>
+
+{isListening
+
+? "🎙 Listening..."
+
+: "🟢 Ready"}
+
+</span>
+
+</div>
+
+{/* ================= VOICE BUTTON ================= */}
+
+<div className="voice-circle">
+
+<button
+
+className={`voice-main-btn ${
+isListening ? "active" : ""
+}`}
+
+onClick={handleVoice}
+
+disabled={isListening}
+
+>
+
+<FaMicrophone />
+
+</button>
+
+<p>
+
+{isListening
+
+? "Listening..."
+
+: "Tap To Speak"}
+
+</p>
+
+</div>
+
+{/* ================= RESPONSE ================= */}
+
+<div className="assistant-console">
+
+<h4>
+
+🤖 Assistant
+
+</h4>
+
+<p>
+
+{message}
+
+</p>
+
+</div>
+
+{/* ================= INPUT ================= */}
+
+<div className="voice-command-box">
+
+<input
+
+value={command}
+
+onChange={(e)=>
+
+setCommand(e.target.value)
+
+}
+
+placeholder='Examples: Add Milk | Mujhe doodh chahiye | Find Coffee'
+
+onKeyDown={(e)=>{
+
+if(e.key==="Enter"){
+
+handleSend();
+
+}
+
+}}
+
+ />
+
+<button
+
+className={`mic-btn ${
+isListening ? "listening" : ""
+}`}
+
+onClick={handleVoice}
+
+disabled={isListening}
+
+>
+
+<FaMicrophone />
+
+</button>
+
+<button
+
+className="send-btn"
+
+onClick={handleSend}
+
+>
+
+<FaPaperPlane />
+
+</button>
+
+</div>
+
+{/* ================= QUICK COMMANDS ================= */}
+
+<div className="suggestions">
+
+<h4>
+
+⚡ Try These Commands
+
+</h4>
+
+<div className="suggestion-grid">
+
+<button
+onClick={()=>
+processCommand("Add Milk")
+}
+>
+
+🥛 Milk
+
+</button>
+
+<button
+onClick={()=>
+processCommand("Buy Bread")
+}
+>
+
+🍞 Bread
+
+</button>
+
+<button
+onClick={()=>
+processCommand("Need Eggs")
+}
+>
+
+🥚 Eggs
+
+</button>
+
+<button
+onClick={()=>
+processCommand("Mujhe doodh chahiye")
+}
+>
+
+🇮🇳 Doodh
+
+</button>
+
+<button
+onClick={()=>
+processCommand("Coffee dhoondo")
+}
+>
+
+☕
+
+Coffee
+
+</button>
+
+<button
+onClick={()=>
+processCommand("2 Apples")
+}
+>
+
+🍎 Apples
+
+</button>
+
+<button
+onClick={()=>
+processCommand("Chocolate add karo")
+}
+>
+
+🍫 Chocolate
+
+</button>
+
+<button
+onClick={()=>
+processCommand("Find Amul Milk")
+}
+>
+
+🥛 Amul
+
+</button>
+
+<button
+onClick={()=>
+processCommand("Milk under 100")
+}
+>
+
+💰 Under ₹100
+
+</button>
+
+<button
+onClick={()=>
+processCommand("Remove Bread")
+}
+>
+
+🗑 Remove
+
+</button>
+
+<button
+onClick={()=>
+processCommand("Search Coffee")
+}
+>
+
+🔍 Search
+
+</button>
+
+<button
+onClick={()=>
+processCommand("Do Chawal Add Karo")
+}
+>
+
+🍚 Rice
+
+</button>
+<button
+onClick={()=>
+processCommand("Buy 2 Milk")
+}
+>
+
+🥛 Buy 2 Milk
+
+</button>
+
+<button
+onClick={()=>
+processCommand("Mujhe Bread Chahiye")
+}
+>
+
+🍞 Hindi Bread
+
+</button>
+
+<button
+onClick={()=>
+processCommand("Coffee Under 300")
+}
+>
+
+☕ Coffee ₹300
+
+</button>
+
+<button
+onClick={()=>
+processCommand("Find Chocolate")
+}
+>
+
+🍫 Search Chocolate
+
+</button>
+
+<button
+onClick={()=>
+processCommand("Delete Apples")
+}
+>
+
+🗑 Delete Apple
+
+</button>
+
+</div>
+
+</div>
+
+{/* ================= FEATURES ================= */}
+
+<div className="voice-features">
+
+<div className="feature">
+
+🌍 English
+
+</div>
+
+<div className="feature">
+
+🇮🇳 Hindi
+
+</div>
+
+<div className="feature">
+
+💬 Hinglish
+
+</div>
+
+<div className="feature">
+
+🎯 Smart Search
+
+</div>
+
+<div className="feature">
+
+🛒 Shopping AI
+
+</div>
+
+<div className="feature">
+
+🔊 Voice Reply
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+);
 }
 
 export default VoiceCommand;

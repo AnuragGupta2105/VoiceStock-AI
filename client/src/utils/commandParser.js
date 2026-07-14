@@ -1,6 +1,11 @@
-import products from "../data/products";
+import productAliases from "./productAliases";
 
-const numbers = {
+// ==========================
+// Quantity Words
+// ==========================
+
+const quantityWords = {
+  zero: 0,
   one: 1,
   two: 2,
   three: 3,
@@ -11,13 +16,121 @@ const numbers = {
   eight: 8,
   nine: 9,
   ten: 10,
+
+  ek: 1,
+  do: 2,
+  teen: 3,
+  char: 4,
+  chaar: 4,
+  paanch: 5,
+  paanchh: 5,
+  cheh: 6,
+  saat: 7,
+  aath: 8,
+  nau: 9,
+  dus: 10,
 };
+
+// ==========================
+// Actions
+// ==========================
+
+const addWords = [
+  "add",
+  "buy",
+  "purchase",
+  "need",
+  "want",
+  "get",
+  "bring",
+  "include",
+  "put",
+
+  "chahiye",
+  "kharid",
+  "kharido",
+  "kharidna",
+  "le",
+  "lao",
+  "laana",
+  "add karo",
+  "daal do",
+  "dal do",
+];
+
+const removeWords = [
+  "remove",
+  "delete",
+  "discard",
+  "erase",
+
+  "hatao",
+  "nikal",
+  "nikal do",
+  "remove karo",
+  "delete karo",
+];
+
+const searchWords = [
+  "find",
+  "search",
+  "locate",
+  "show",
+  "look",
+
+  "dhoondo",
+  "dikhao",
+  "search karo",
+];
+
+// ==========================
+// Fillers
+// ==========================
+
+const fillers = [
+  "please",
+  "can",
+  "could",
+  "would",
+  "kindly",
+
+  "i",
+  "me",
+  "my",
+  "to",
+
+  "want",
+  "need",
+
+  "mujhe",
+  "mere",
+  "liye",
+  "zara",
+  "kripya",
+
+  "please",
+
+  "shopping",
+  "list",
+  "cart",
+
+  "of",
+  "some",
+  "a",
+  "an",
+];
+
+// ==========================
 
 export function parseCommand(text) {
 
-  const input = text.toLowerCase().trim();
+  let input = text.toLowerCase().trim();
 
-  // ---------------- Quantity ----------------
+  input = input.replace(/[.,!?]/g, "");
+
+  // ======================
+  // Quantity
+  // ======================
 
   let quantity = 1;
 
@@ -29,11 +142,11 @@ export function parseCommand(text) {
 
   } else {
 
-    for (const word in numbers) {
+    for (const word in quantityWords) {
 
       if (input.includes(word)) {
 
-        quantity = numbers[word];
+        quantity = quantityWords[word];
         break;
 
       }
@@ -42,47 +155,82 @@ export function parseCommand(text) {
 
   }
 
-  // ---------------- Action ----------------
+  // ======================
+  // Action
+  // ======================
 
   let action = "ADD";
 
-  if (
-    input.includes("remove") ||
-    input.includes("delete")
-  ) {
+  if (removeWords.some(word => input.includes(word))) {
 
     action = "REMOVE";
 
   }
 
-  else if (
-    input.includes("find") ||
-    input.includes("search")
-  ) {
+  else if (searchWords.some(word => input.includes(word))) {
 
     action = "SEARCH";
 
   }
 
-  // ---------------- Product Detection ----------------
+  else if (addWords.some(word => input.includes(word))) {
 
-  let productName = "";
+    action = "ADD";
 
-  for (const product of products) {
+  }
 
-    const name = product.name.toLowerCase();
+  // ======================
+  // Price Filter
+  // ======================
 
-    const singular = name.replace(/s$/, "");
+  let price = null;
 
-    if (
+  const priceMatch = input.match(
+    /(under|below|less than)\s*₹?\s*(\d+)/i
+  );
 
-      input.includes(name) ||
+  if (priceMatch) {
 
-      input.includes(singular)
+    price = Number(priceMatch[2]);
 
-    ) {
+  }
 
-      productName = product.name;
+  // ======================
+  // Brand
+  // ======================
+
+  let brand = "";
+
+  const brands = [
+    "amul",
+    "britannia",
+    "nestle",
+    "nescafe",
+    "parle",
+    "tata",
+  ];
+
+  brands.forEach((b) => {
+
+    if (input.includes(b)) {
+
+      brand = b.charAt(0).toUpperCase() + b.slice(1);
+
+    }
+
+  });
+
+  // ======================
+  // Product Detection
+  // ======================
+
+  let item = "";
+
+  for (const alias in productAliases) {
+
+    if (input.includes(alias)) {
+
+      item = productAliases[alias];
 
       break;
 
@@ -90,19 +238,29 @@ export function parseCommand(text) {
 
   }
 
-  // ---------------- Fallback ----------------
+  // ======================
+  // Fallback
+  // ======================
 
-  if (!productName) {
+  if (!item) {
 
-    let cleaned = input
-      .replace(
-        /\b(add|buy|get|need|want|please|can|you|me|find|search|remove|delete|of|some|a|an|to)\b/g,
+    let cleaned = input;
+
+    fillers.forEach(word => {
+
+      cleaned = cleaned.replace(
+        new RegExp("\\b" + word + "\\b", "g"),
         ""
-      )
+      );
+
+    });
+
+    cleaned = cleaned
       .replace(/\d+/g, "")
+      .replace(/\s+/g, " ")
       .trim();
 
-    productName =
+    item =
       cleaned.charAt(0).toUpperCase() +
       cleaned.slice(1);
 
@@ -112,9 +270,13 @@ export function parseCommand(text) {
 
     action,
 
+    item,
+
     quantity,
 
-    item: productName,
+    brand,
+
+    price,
 
   };
 
