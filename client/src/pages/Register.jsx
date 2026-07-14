@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import API from "../api/api";
-
 import "../styles/Auth.css";
 
 export default function Register() {
@@ -11,17 +10,20 @@ export default function Register() {
   const [form, setForm] = useState({
     name: "",
     email: "",
-    password: ""
+    password: "",
   });
 
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
+
     setForm({
       ...form,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
+
   };
 
   const register = async (e) => {
@@ -30,26 +32,37 @@ export default function Register() {
 
     setError("");
     setSuccess("");
+    setLoading(true);
 
     try {
 
-      await API.post("/auth/register", form);
+      const res = await API.post("/auth/register", form);
 
-      setSuccess("Registration Successful!");
+      setSuccess("✅ Account created successfully!");
+
+      setLoading(false);
 
       setTimeout(() => {
+
         navigate("/login");
+
       }, 1200);
 
-    } catch (err) {
-  console.log(err.response?.data);
+    }
 
-  setError(
-    err.response?.data?.message ||
-    err.message ||
-    "Registration Failed"
-  );
-}
+    catch (err) {
+
+      setLoading(false);
+
+      setError(
+
+        err.response?.data?.message ||
+
+        "Registration Failed. Please try again."
+
+      );
+
+    }
 
   };
 
@@ -66,75 +79,128 @@ export default function Register() {
           <h3>Smart AI Shopping Assistant</h3>
 
           <p>
+
             ✔ Voice Shopping
+
             <br />
+
             ✔ AI Recommendations
+
             <br />
+
             ✔ Shopping History
+
             <br />
+
             ✔ Smart Insights
+
           </p>
 
         </div>
 
         <div className="right-panel">
 
-          <form className="auth-card" onSubmit={register}>
+          <form
+            className="auth-card"
+            onSubmit={register}
+          >
 
             <h2>Create Account</h2>
 
-            <p>Join VoiceStock AI today.</p>
+            <p>
 
-            {error && <div className="error">{error}</div>}
+              Join VoiceStock AI today.
 
-            {success && <div className="success">{success}</div>}
+            </p>
+
+            {error && (
+
+              <div className="error">
+
+                {error}
+
+              </div>
+
+            )}
+
+            {success && (
+
+              <div className="success">
+
+                {success}
+
+              </div>
+
+            )}
 
             <div className="input-group">
+
               <label>Name</label>
 
               <input
                 type="text"
                 name="name"
                 placeholder="Your Name"
+                value={form.name}
                 onChange={handleChange}
                 required
               />
+
             </div>
 
             <div className="input-group">
+
               <label>Email</label>
 
               <input
                 type="email"
                 name="email"
                 placeholder="Enter Email"
+                value={form.email}
                 onChange={handleChange}
                 required
               />
+
             </div>
 
             <div className="input-group">
+
               <label>Password</label>
 
               <input
                 type="password"
                 name="password"
                 placeholder="Create Password"
+                value={form.password}
                 onChange={handleChange}
                 required
               />
+
             </div>
 
-            <button className="auth-btn">
-              Create Account
+            <button
+              className="auth-btn"
+              disabled={loading}
+            >
+
+              {loading
+
+                ? "Creating Account..."
+
+                : "Create Account"}
+
             </button>
 
             <div className="bottom-link">
-              Already have an account?
-              {" "}
+
+              Already have an account?{" "}
+
               <Link to="/login">
+
                 Login
+
               </Link>
+
             </div>
 
           </form>

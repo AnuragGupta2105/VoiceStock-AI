@@ -13,8 +13,8 @@ email:"",
 password:""
 
 });
-
-const [error,setError]=useState("");
+const [error, setError] = useState("");
+const [loading, setLoading] = useState(false);
 
 const handleChange=(e)=>{
 
@@ -32,6 +32,7 @@ const login = async (e) => {
   e.preventDefault();
 
   setError("");
+  setLoading(true);
 
   console.log("Login button clicked");
 
@@ -42,12 +43,14 @@ const login = async (e) => {
 
     localStorage.setItem("token", res.data.token);
     localStorage.setItem("user", JSON.stringify(res.data.user));
-
+setLoading(false);
     console.log("Navigating to dashboard...");
 window.location.replace("/dashboard");
-  } catch (err) {
-    console.log("Login Error:", err.response?.data || err.message);
 
+  }
+   catch (err) {
+    console.log("Login Error:", err.response?.data || err.message);
+setLoading(false);
     setError(
       err.response?.data?.message || "Login Failed"
     );
@@ -132,10 +135,11 @@ required
 
 </div>
 
-<button className="auth-btn">
-
-Login
-
+<button
+  className="auth-btn"
+  disabled={loading}
+>
+  {loading ? "Logging in..." : "Login"}
 </button>
 
 <div className="bottom-link">
