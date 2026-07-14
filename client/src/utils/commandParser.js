@@ -335,20 +335,30 @@ export function parseCommand(text) {
 
   }
 
-  return {
+ // If searching by category, don't search by item too
+if (category) {
+  item = "";
+}
 
-    action,
+// If searching by brand only, don't search by leftover text
+if (brand && !item) {
+  item = "";
+}
 
-    item,
+return {
 
-    quantity,
+  action,
 
-    brand,
+  item,
 
-    category,
+  quantity,
 
-    price,
+  brand,
 
-  };
+  category,
+
+  price,
+
+};
 
 }

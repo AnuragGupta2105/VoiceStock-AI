@@ -158,7 +158,7 @@ function VoiceCommand({
     if (!inputCommand.trim()) return;
 
     const result = parseCommand(inputCommand);
-
+console.log(result);
     let msg = "";
 
     try {

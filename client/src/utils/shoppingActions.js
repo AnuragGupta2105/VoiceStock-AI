@@ -153,20 +153,18 @@ export function searchItem(result) {
   // Product Name
   // -------------------------
 
-  if (result.item) {
+  // Search by product name ONLY if category isn't specified
+if (result.item && !result.category) {
 
-    filtered = filtered.filter(product =>
+  filtered = filtered.filter(product =>
 
-      normalize(product.name).includes(
+    normalize(product.name).includes(
+      normalize(result.item)
+    )
 
-        normalize(result.item)
+  );
 
-      )
-
-    );
-
-  }
-
+}
   // -------------------------
   // Brand
   // -------------------------
