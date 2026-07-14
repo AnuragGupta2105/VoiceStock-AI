@@ -536,7 +536,7 @@ processCommand("Mujhe doodh chahiye")
 }
 >
 
-🇮🇳 Doodh
+🥛 Doodh
 
 </button>
 
@@ -569,105 +569,6 @@ processCommand("Chocolate add karo")
 >
 
 🍫 Chocolate
-
-</button>
-
-<button
-onClick={()=>
-processCommand("Find Amul Milk")
-}
->
-
-🥛 Amul
-
-</button>
-
-<button
-onClick={()=>
-processCommand("Milk under 100")
-}
->
-
-💰 Under ₹100
-
-</button>
-
-<button
-onClick={()=>
-processCommand("Remove Bread")
-}
->
-
-🗑 Remove
-
-</button>
-
-<button
-onClick={()=>
-processCommand("Search Coffee")
-}
->
-
-🔍 Search
-
-</button>
-
-<button
-onClick={()=>
-processCommand("Do Chawal Add Karo")
-}
->
-
-🍚 Rice
-
-</button>
-<button
-onClick={()=>
-processCommand("Buy 2 Milk")
-}
->
-
-🥛 Buy 2 Milk
-
-</button>
-
-<button
-onClick={()=>
-processCommand("Mujhe Bread Chahiye")
-}
->
-
-🍞 Hindi Bread
-
-</button>
-
-<button
-onClick={()=>
-processCommand("Coffee Under 300")
-}
->
-
-☕ Coffee ₹300
-
-</button>
-
-<button
-onClick={()=>
-processCommand("Find Chocolate")
-}
->
-
-🍫 Search Chocolate
-
-</button>
-
-<button
-onClick={()=>
-processCommand("Delete Apples")
-}
->
-
-🗑 Delete Apple
 
 </button>
 
